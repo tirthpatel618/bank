@@ -1,0 +1,8 @@
+telegram
+python-telegram-bot
+gspread 
+oauth2client
+Pillow
+pytesseract
+psycopg2
+asyncio
