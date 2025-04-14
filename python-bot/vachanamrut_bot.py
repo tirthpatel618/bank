@@ -12,7 +12,7 @@ import os
 import psycopg2
 import asyncio
 from dotenv import load_dotenv
-# Logging Configuration
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -51,12 +51,11 @@ def save_topics(topics_list):
         for topic in filtered:
             f.write(topic + "\n")
 
-# Load topics at startup
 TOPICS = load_topics()
 
 # Database Configuration
 
-DB_CONN = None  # Global database connection
+DB_CONN = None  
 
 load_dotenv()
 DB_HOST = os.getenv('DB_HOST')
@@ -68,11 +67,11 @@ DB_PORT = os.getenv('DB_PORT')
 def init_db():
 
     conn = psycopg2.connect(
-         host=DB_HOST,      # Change if necessary
-         port=DB_PORT,             # Default PostgreSQL port
-         dbname=DB_NAME,   # Replace with your database name
-         user=DB_USER,         # Replace with your database user
-         password=DB_PASSWORD  # Replace with your database password
+         host=DB_HOST,      
+         port=DB_PORT,             
+         dbname=DB_NAME,   
+         user=DB_USER,         
+         password=DB_PASSWORD  
     )
     cursor = conn.cursor()
     cursor.execute('''
@@ -117,13 +116,11 @@ async def receive_quote(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     """
     if update.message.photo:
         try:
-            # Get the best (highest resolution) photo available
             file_id = update.message.photo[-1].file_id
             new_file = await context.bot.get_file(file_id)
             image_path = "quote_image.jpg"
             await new_file.download_to_drive(image_path)
 
-            # Use OCR to extract text from the image
             img = Image.open(image_path)
             extracted_text = pytesseract.image_to_string(img).strip()
             os.remove(image_path)
@@ -157,7 +154,6 @@ async def receive_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     """Stores the Vachanamrut number and prompts for the topic selection."""
     context.user_data["vachanamrut_number"] = update.message.text
 
-    # Build a custom keyboard with topics
     reply_keyboard = [[topic] for topic in TOPICS]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     await update.message.reply_text(
@@ -190,10 +186,8 @@ async def add_new_topic(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     Adds the new topic into the topics list (and file) and stores it.
     """
     new_topic = update.message.text
-    # Insert the new topic just before "Add new topic" if not already present
     if new_topic not in TOPICS:
         TOPICS.insert(-1, new_topic)
-        # Persist the updated list to file
         save_topics(TOPICS)
 
     context.user_data["topic"] = new_topic
@@ -210,11 +204,9 @@ async def finalize(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     vachanamrut_number = context.user_data.get("vachanamrut_number")
     topic = context.user_data.get("topic")
 
-    # Prepare the row
     row = [vachanamrut_place, vachanamrut_number, quote, topic]
 
     try:
-        # Insert into DB on a background thread to avoid blocking
         await asyncio.to_thread(insert_into_db, row)
         await update.message.reply_text(
             "The quote has been saved successfully to the database!",
@@ -242,14 +234,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 def main():
     global DB_CONN
 
-    # Initialize PostgreSQL connection (and table)
     DB_CONN = init_db()
 
-    # Create the Telegram Bot Application
     TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
     application = Application.builder().token(TOKEN).build()
 
-    # Set up the conversation handler with states
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
@@ -263,7 +252,6 @@ def main():
     )
     application.add_handler(conv_handler)
 
-    # Start polling for updates
     application.run_polling()
 
 if __name__ == "__main__":
