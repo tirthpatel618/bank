@@ -1,38 +1,126 @@
-.App {
+/* Import a modern font (Poppins as an example) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f5f7;
+}
+
+.app-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative; /* For positioning the popup if needed */
+}
+
+.heading {
   text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #333;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.topics-container {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.topic-button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.topic-button:hover {
+  background-color: #e5e5e5;
+}
+
+.topic-button.active {
+  background-color: #d1e7ff;
+  border-color: #a9d2ff;
+  color: #333;
+}
+
+.quotes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border: 1px solid #ddd; /* subtle border around the table */
+}
+
+/* Header row background */
+.quotes-table thead tr {
+  background-color: #efefef;
+}
+
+/* Table header cells */
+.table-header {
+  font-weight: 500;
+  text-align: left;
+  padding: 16px;
+}
+
+/* Row separator spanning entire row */
+.quotes-table tbody tr {
+  border-bottom: 1px solid #ccc;
+}
+.quotes-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Zebra striping (applies to every even row) */
+.quotes-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Table cells */
+.table-cell {
+  padding: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.copy-cell {
+  cursor: pointer;
+  color: #2b7a78; /* give it a subtle hint that it's clickable */
+}
+
+/* Popup styling */
+.copy-popup {
+  position: fixed;
+  /* top-right corner or adjust if you prefer another position */
+  top: 20px;
+  right: 20px;
+  background-color: #333;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 0.9;
+}
+
+/* Responsive design: stack table on smaller devices */
+@media (max-width: 768px) {
+  .quotes-table {
+    display: block;
+    overflow-x: auto;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .table-header,
+  .table-cell {
+    white-space: nowrap;
   }
 }

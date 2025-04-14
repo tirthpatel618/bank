@@ -14,7 +14,11 @@ import asyncio
 from dotenv import load_dotenv
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO,
+    handlers=[
+        logging.FileHandler("bot.log"),
+        logging.StreamHandler()  # This ensures logs also go to the terminal
+    ]
 )
 logger = logging.getLogger(__name__)
 
@@ -22,24 +26,21 @@ logger = logging.getLogger(__name__)
 QUOTE, ASK_PLACE, ASK_NUMBER, CHOOSE_TOPIC, NEW_TOPIC = range(5)
 
 # Topics
-TOPICS_FILE = "topics.txt"
+TOPICS_FILE = "python-bot/topics.txt"
 
 def load_topics():
     """
     Load topics from a local text file. Each topic should be on its own line.
-    If the file doesn't exist or is empty, return a default list.
     """
-    if not os.path.exists(TOPICS_FILE):
-        # Return some default topics if file not found
-        return []
-
     with open(TOPICS_FILE, "r", encoding="utf-8") as f:
         lines = [line.strip() for line in f if line.strip()]
-        # Ensure "Add new topic" is always at the end. We’ll remove it first if present.
+        logger.info("Loaded topics from file: %s", lines)
         if "Add new topic" in lines:
             lines.remove("Add new topic")
-        # Return the lines plus the special topic
+
+        logger.info("Loaded topics: %s", lines)
         return lines + ["Add new topic"]
+
 
 def save_topics(topics_list):
     """
@@ -50,6 +51,7 @@ def save_topics(topics_list):
     with open(TOPICS_FILE, "w", encoding="utf-8") as f:
         for topic in filtered:
             f.write(topic + "\n")
+    logger.info("Saved topics: %s", filtered)
 
 TOPICS = load_topics()
 

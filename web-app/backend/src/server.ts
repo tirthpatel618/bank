@@ -22,7 +22,8 @@ app.get('/api/quotes', async (req, res) => {
 app.get('/api/topics', async (req, res) => {
   try {
     const result = await pool.query('SELECT DISTINCT topic FROM vachanamrut_quotes');
-    const topics = result.rows.map(row => row.topic);
+    const topics = result.rows.map((row: any) => row.topic);
+
     res.json(topics);
   } catch (error) {
     console.error(error);
