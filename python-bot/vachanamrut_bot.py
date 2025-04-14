@@ -142,12 +142,25 @@ async def receive_quote(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     else:
         await update.message.reply_text("Please send a valid text or image.")
         return QUOTE
+    PLACES = ["Gadhada I", "Gadhada II", "Gadhada III", "Sarangpur", "Karyani", "Loya", "Panchala", "Vartal", "Amdavad", "Jetalpur"]
+    reply_keyboard = [[place] for place in PLACES]
+    markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
 
-    await update.message.reply_text("Which Vachanamrut is this from? (Enter the Vachanamrut Place)")
+    await update.message.reply_text("Which Vachanamrut is this from? (Enter the Vachanamrut Place)", reply_markup=markup)
+    
     return ASK_PLACE
 
 async def receive_place(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    PLACES = ["Gadhada I", "Gadhada II", "Gadhada III", "Sarangpur", "Karyani", "Loya", "Panchala", "Vartal", "Amdavad", "Jetalpur"]
+    reply_keyboard = [[place] for place in PLACES]
+    markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     """Stores the Vachanamrut place and asks for the Vachanamrut number."""
+    if update.message.text not in PLACES:
+        await update.message.reply_text(
+            "Please select a valid Vachanamrut Place from the options below:",
+            reply_markup=markup
+        )
+        return ASK_PLACE
     context.user_data["vachanamrut_place"] = update.message.text
     await update.message.reply_text("Please enter the Vachanamrut Number.")
     return ASK_NUMBER
