@@ -4,5 +4,6 @@ gspread
 oauth2client
 Pillow
 pytesseract
-psycopg2
 asyncio
+psycopg2-binary
+python-dotenv

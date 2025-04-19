@@ -16,18 +16,21 @@ const App: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
+    const baseUrl = process.env.REACT_APP_API_URL;
+  
     // Fetch all quotes
-    fetch('http://localhost:3001/api/quotes')
+    fetch(`${baseUrl}/api/quotes`)
       .then((res) => res.json())
       .then((data: Quote[]) => setQuotes(data))
       .catch((err) => console.error(err));
-
+  
     // Fetch all topics
-    fetch('http://localhost:3001/api/topics')
+    fetch(`${baseUrl}/api/topics`)
       .then((res) => res.json())
       .then((data: string[]) => setAllTopics(data))
       .catch((err) => console.error(err));
   }, []);
+  
 
   // Toggle selected topics
   const toggleTopic = (topic: string) => {

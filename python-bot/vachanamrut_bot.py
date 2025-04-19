@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 QUOTE, ASK_PLACE, ASK_NUMBER, CHOOSE_TOPIC, NEW_TOPIC = range(5)
 
 # Topics
-TOPICS_FILE = "python-bot/topics.txt"
+TOPICS_FILE = os.path.join(os.path.dirname(__file__), "topics.txt")
 
 def load_topics():
     """
@@ -67,7 +67,8 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_PORT = os.getenv('DB_PORT')
 
 def init_db():
-
+    '''
+    # will change this to be with db url once hosted
     conn = psycopg2.connect(
          host=DB_HOST,      
          port=DB_PORT,             
@@ -75,6 +76,8 @@ def init_db():
          user=DB_USER,         
          password=DB_PASSWORD  
     )
+    '''
+    conn = psycopg2.connect(os.getenv('DATABASE_URL'))
     cursor = conn.cursor()
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS vachanamrut_quotes (
@@ -247,12 +250,14 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 def main():
+    logger.info("Starting the bot...")
     global DB_CONN
 
     DB_CONN = init_db()
 
-    TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+    TOKEN = os.getenv('BOT_TOKEN')
     application = Application.builder().token(TOKEN).build()
+    logger.info("Bot initialized. Starting polling...")
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],

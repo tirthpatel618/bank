@@ -1,4 +1,6 @@
 .env
 node_modules
-*.log
-
+build
+dist
+bot.log
+__pycache__/
