@@ -11,7 +11,9 @@ app.use(express.json());
 
 app.get('/api/quotes', async (req, res) => {
   try {
+    console.log("DB URL:", process.env.DATABASE_URL);
     const result = await pool.query('SELECT * FROM vachanamrut_quotes ORDER BY id DESC');
+    console.log("Quotes:", result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error(error);
